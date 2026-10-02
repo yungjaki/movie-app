@@ -1,0 +1,11 @@
+# Python / Django
+venv/
+*.pyc
+__pycache__/
+db.sqlite3
+# Node / React
+client/node_modules/
+client/dist/
+# IDE / VS Code
+.vscode/
+.DS_Store

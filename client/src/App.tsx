@@ -1,122 +1,96 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState, type FormEvent } from 'react';
+
+type Movie = {
+  id: number;
+  title: string;
+  genre: string;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [movies, setMovies] = useState<Movie[]>([
+    { id: 1, title: 'Inception', genre: 'Sci-Fi' },
+    { id: 2, title: 'The Dark Knight', genre: 'Action' }
+  ]);
+
+  const [title, setTitle] = useState('');
+  const [genre, setGenre] = useState('');
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!title.trim() || !genre.trim()) return;
+
+    const newMovie: Movie = {
+      id: Date.now(),
+      title: title.trim(),
+      genre: genre.trim(),
+    };
+
+    setMovies((prevMovies) => [...prevMovies, newMovie]);
+    setTitle('');
+    setGenre('');
+  };
+
+  const handleDelete = (id: number) => {
+    setMovies((prevMovies) => prevMovies.filter((movie) => movie.id !== id));
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="container mt-5" style={{ maxWidth: '600px' }}>
+      <h1 className="text-center mb-4">🎬 Моят Филмов Списък</h1>
 
-      <div className="ticks"></div>
+      <div className="card p-4 mb-4 shadow-sm">
+        <form onSubmit={handleSubmit} className="row g-2">
+          <div className="col-md-5">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Заглавие..."
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <div className="col-md-5">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Жанр..."
+              value={genre}
+              onChange={(e) => setGenre(e.target.value)}
+            />
+          </div>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+          <div className="col-md-2">
+            <button type="submit" className="btn btn-primary w-100">
+              +
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <ul className="list-group">
+        {movies.map((movie) => (
+          <li
+            key={movie.id}
+            className="list-group-item d-flex justify-content-between align-items-center"
+          >
+            <div>
+              <strong>{movie.title}</strong>{' '}
+              <span className="badge bg-info text-dark ms-2">{movie.genre}</span>
+            </div>
+
+            <button
+              onClick={() => handleDelete(movie.id)}
+              className="btn btn-outline-danger btn-sm"
+            >
+              Изтрий
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
-export default App
+export default App;
